@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const http = require('http');
 // Token du bot
-const token = 'VOTRE_TOKEN_BOT_ICI';
+const token = '7427176024:AAGxRhSeien7siUpycr8FnZ5qDnIsBUOsjs';
 
 // ID du canal Telegram où les signaux seront envoyés
 const channelId = '-1002077280025';  // Remplacez par l'ID de votre canal
