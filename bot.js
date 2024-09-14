@@ -1,3 +1,4 @@
+const http = require('http');
 const TelegramBot = require('node-telegram-bot-api');
 const token = '7038981201:AAHmbzgSCypqPMKVyvId2KFRu9bWaV3ZFkM';
 const bot = new TelegramBot(token, { polling: true });
@@ -120,3 +121,13 @@ bot.onText(/\/send/, (msg) => {
 
 // DÃ©marrer la planification des signaux
 scheduleSignals();
+
+
+
+
+console.log('Bot demarrer');
+// Code keep_alive pour Ã©viter que le bot ne s'endorme
+http.createServer(function (req, res) {
+    res.write("I'm alive");
+    res.end();
+}).listen(8080);
