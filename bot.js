@@ -3,18 +3,73 @@ const http = require('http');
 // Token du bot
 const token = '7038981201:AAHmbzgSCypqPMKVyvId2KFRu9bWaV3ZFkM';
 
+
+      
+
 // ID du canal Telegram où les signaux seront envoyés
 const channelId = '-1002077280025';  // Remplacez par l'ID de votre canal
 
 // Initialisation du bot
 const bot = new TelegramBot(token, { polling: true });
 
+// Paires de devises disponibles pour chaque session
+const pairs = {
+  morning: [
+    '🇪🇺 EUR/JPY 🇯🇵 OTC',
+    '🇬🇧 GBP/USD 🇺🇸 OTC',
+    '🇺🇸 USD/CNH 🇨🇳 OTC',
+    '🇬🇧 GBP/AUD 🇦🇺 OTC',
+    '🇺🇸 USD/CHF 🇨🇭 OTC',
+    '🇺🇸 USD/CAD 🇨🇦 OTC',
+    '🇪🇺 EUR/JPY 🇯🇵 OTC',
+    '🇪🇺 EUR/GBP 🇬🇧 OTC',
+    '🇺🇸 USD/CNH 🇨🇳 OTC',
+    '🇺🇸 USD/JPY 🇯🇵 OTC'
+  ],
+  afternoon: [
+    '🇺🇸 USD/CAD 🇨🇦 OTC',
+    '🇺🇸 USD/JPY 🇯🇵 OTC',
+    '🇬🇧 GBP/AUD 🇦🇺 OTC',
+    '🇺🇸 USD/JPY 🇯🇵 OTC',
+    '🇺🇸 USD/CHF 🇨🇭 OTC',
+    '🇬🇧 GBP/USD 🇺🇸 OTC',
+    '🇺🇸 USD/CNH 🇨🇳 OTC',
+    '🇺🇸 USD/JPY 🇯🇵 OTC',
+    '🇬🇧 GBP/JPY 🇯🇵 OTC',
+    '🇪🇺 EUR/USD 🇺🇸 OTC'
+  ],
+  evening: [
+    '🇺🇸 USD/CNH 🇨🇳 OTC',
+    '🇬🇧 GBP/USD 🇺🇸 OTC',
+    '🇺🇸 USD/CAD 🇨🇦 OTC',
+    '🇬🇧 GBP/USD 🇺🇸 OTC',
+    '🇺🇸 USD/CHF 🇨🇭 OTC',
+    '🇺🇸 USD/JPY 🇯🇵 OTC',
+    '🇬🇧 GBP/USD 🇺🇸 OTC',
+    '🇺🇸 USD/CAD 🇨🇦 OTC',
+    '🇪🇺 EUR/USD 🇺🇸 OTC',
+    '🇺🇬 GBP/JPY 🇯🇵 OTC'
+  ],
+  night: [
+    '🇺🇸 USD/CNH 🇨🇳 OTC',
+    '🇬🇧 GBP/USD 🇺🇸 OTC',
+    '🇺🇸 USD/CAD 🇨🇦 OTC',
+    '🇬🇧 GBP/USD 🇺🇸 OTC',
+    '🇺🇸 USD/CHF 🇨🇭 OTC',
+    '🇺🇸 USD/JPY 🇯🇵 OTC',
+    '🇬🇧 GBP/USD 🇺🇸 OTC',
+    '🇺🇸 USD/CAD 🇨🇦 OTC',
+    '🇪🇺 EUR/USD 🇺🇸 OTC',
+    '🇬🇧 GBP/JPY 🇯🇵 OTC'
+  ]
+};
+
 // Planification des signaux pour chaque session (10 signaux par session)
 const schedule = {
-  morning: ['06:35', '06:55', '07:10', '07:55', '08:10', '08:55', '09:15', '09:55', '10:10', '10:55'],
-  afternoon: ['12:05', '12:30', '12:55', '13:20', '13:45', '14:10', '14:35', '15:00', '15:25', '15:50'],
-  evening: ['18:10', '18:35', '19:00', '19:25', '19:50', '20:15', '20:40', '21:05', '21:30', '21:55'],
-  night: ['00:10', '00:35', '01:00', '01:25', '01:50', '02:15', '02:40', '03:05', '03:30', '03:55']
+  morning: ['06:35', '06:55', '07:10', '07:25', '07:55', '08:10', '08:40', '08:55', '09:15', '10:25'],
+  afternoon: ['12:35', '12:55', '13:25', '13:45', '14:05', '14:25', '14:55', '15:10', '15:35', '15:50'],
+  evening: ['18:35', '18:55', '19:15', '19:35', '20:00', '20:15', '20:30', '20:45', '21:00', '21:25'],
+  night: ['00:35', '00:45', '00:55', '01:20', '01:35', '01:50', '02:05', '02:30', '02:45', '03:00']
 };
 
 // Fonction utilitaire pour ajouter des minutes à une heure donnée (format HH:MM)
@@ -29,8 +84,9 @@ function addMinutes(time, minutesToAdd) {
 // Fonction pour formater les signaux avec le template et le lien hypertexte
 function formatSignal(time, entry, direction) {
   const emoji = direction === 'BUY' ? '🟩' : '🟥';
+  const pair = pairs[morningSession ? 'morning' : (afternoonSession ? 'afternoon' : (eveningSession ? 'evening' : 'night'))][Math.floor(Math.random() * 10)];
   return `
-🇪🇺 EUR/GBP 🇬🇧 OTC
+${pair}
 🕘 Expiration 5M
 ⏺ Entry at ${entry}
 ${emoji} ${direction}
@@ -40,8 +96,8 @@ ${emoji} ${direction}
 2️⃣ level at ${addMinutes(entry, 10)}  
 3️⃣ level at ${addMinutes(entry, 15)}
 
-💥 <a href="https://bit.ly/4cAu9yg">GET THIS SIGNAL HERE!</a>
-💰 <a href="https://telegra.ph/INSTRUCTIONS-08-25">HOW TO START?</a>
+💥 <a href="https://www.brof.jej">GET THIS SIGNAL HERE!</a>
+💰 HOW TO START?
   `;
 }
 
@@ -121,6 +177,8 @@ bot.onText(/\/announce_morning/, () => announceSession('morning', '🌤'));
 bot.onText(/\/announce_afternoon/, () => announceSession('afternoon', '☀️'));
 bot.onText(/\/announce_evening/, () => announceSession('evening', '🌙'));
 bot.onText(/\/announce_night/, () => announceSession('night', '🌑'));
+
+
 
 
 console.log('Bot demarrer');
