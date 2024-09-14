@@ -40,8 +40,8 @@ ${emoji} ${direction}
 2️⃣ level at ${addMinutes(entry, 10)}  
 3️⃣ level at ${addMinutes(entry, 15)}
 
-💥 <a href="https://www.brof.jej">GET THIS SIGNAL HERE!</a>
-💰 HOW TO START?
+💥 <a href="https://bit.ly/4cAu9yg">GET THIS SIGNAL HERE!</a>
+💰 <a href="https://telegra.ph/INSTRUCTIONS-08-25">HOW TO START?</a>
   `;
 }
 
