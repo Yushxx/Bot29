@@ -1,10 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const http = require('http');
 // Token du bot
-const token = '7038981201:AAHmbzgSCypqPMKVyvId2KFRu9bWaV3ZFkM';
-
-
-      
+const token = 'VOTRE_TOKEN_BOT_ICI';
 
 // ID du canal Telegram où les signaux seront envoyés
 const channelId = '-1002077280025';  // Remplacez par l'ID de votre canal
@@ -12,59 +9,19 @@ const channelId = '-1002077280025';  // Remplacez par l'ID de votre canal
 // Initialisation du bot
 const bot = new TelegramBot(token, { polling: true });
 
-// Paires de devises disponibles pour chaque session
-const pairs = {
-  morning: [
-    '🇪🇺 EUR/JPY 🇯🇵 OTC',
-    '🇬🇧 GBP/USD 🇺🇸 OTC',
-    '🇺🇸 USD/CNH 🇨🇳 OTC',
-    '🇬🇧 GBP/AUD 🇦🇺 OTC',
-    '🇺🇸 USD/CHF 🇨🇭 OTC',
-    '🇺🇸 USD/CAD 🇨🇦 OTC',
-    '🇪🇺 EUR/JPY 🇯🇵 OTC',
-    '🇪🇺 EUR/GBP 🇬🇧 OTC',
-    '🇺🇸 USD/CNH 🇨🇳 OTC',
-    '🇺🇸 USD/JPY 🇯🇵 OTC'
-  ],
-  afternoon: [
-    '🇺🇸 USD/CAD 🇨🇦 OTC',
-    '🇺🇸 USD/JPY 🇯🇵 OTC',
-    '🇬🇧 GBP/AUD 🇦🇺 OTC',
-    '🇺🇸 USD/JPY 🇯🇵 OTC',
-    '🇺🇸 USD/CHF 🇨🇭 OTC',
-    '🇬🇧 GBP/USD 🇺🇸 OTC',
-    '🇺🇸 USD/CNH 🇨🇳 OTC',
-    '🇺🇸 USD/JPY 🇯🇵 OTC',
-    '🇬🇧 GBP/JPY 🇯🇵 OTC',
-    '🇪🇺 EUR/USD 🇺🇸 OTC'
-  ],
-  evening: [
-    '🇺🇸 USD/CNH 🇨🇳 OTC',
-    '🇬🇧 GBP/USD 🇺🇸 OTC',
-    '🇺🇸 USD/CAD 🇨🇦 OTC',
-    '🇬🇧 GBP/USD 🇺🇸 OTC',
-    '🇺🇸 USD/CHF 🇨🇭 OTC',
-    '🇺🇸 USD/JPY 🇯🇵 OTC',
-    '🇬🇧 GBP/USD 🇺🇸 OTC',
-    '🇺🇸 USD/CAD 🇨🇦 OTC',
-    '🇪🇺 EUR/USD 🇺🇸 OTC',
-    '🇺🇬 GBP/JPY 🇯🇵 OTC'
-  ],
-  night: [
-    '🇺🇸 USD/CNH 🇨🇳 OTC',
-    '🇬🇧 GBP/USD 🇺🇸 OTC',
-    '🇺🇸 USD/CAD 🇨🇦 OTC',
-    '🇬🇧 GBP/USD 🇺🇸 OTC',
-    '🇺🇸 USD/CHF 🇨🇭 OTC',
-    '🇺🇸 USD/JPY 🇯🇵 OTC',
-    '🇬🇧 GBP/USD 🇺🇸 OTC',
-    '🇺🇸 USD/CAD 🇨🇦 OTC',
-    '🇪🇺 EUR/USD 🇺🇸 OTC',
-    '🇬🇧 GBP/JPY 🇯🇵 OTC'
-  ]
-};
+// Liste des paires de devises disponibles
+const pairs = [
+  '🇪🇺 EUR/JPY 🇯🇵 OTC',
+  '🇬🇧 GBP/USD 🇺🇸 OTC',
+  '🇺🇸 USD/CNH 🇨🇳 OTC',
+  '🇬🇧 GBP/AUD 🇦🇺 OTC',
+  '🇺🇸 USD/CHF 🇨🇭 OTC',
+  '🇺🇸 USD/CAD 🇨🇦 OTC',
+  '🇪🇺 EUR/GBP 🇬🇧 OTC',
+  '🇺🇸 USD/JPY 🇯🇵 OTC'
+];
 
-// Planification des signaux pour chaque session (10 signaux par session)
+// Horaires des signaux pour chaque session
 const schedule = {
   morning: ['06:35', '06:55', '07:10', '07:25', '07:55', '08:10', '08:40', '08:55', '09:15', '10:25'],
   afternoon: ['12:35', '12:55', '13:25', '13:45', '14:05', '14:25', '14:55', '15:10', '15:35', '15:50'],
@@ -82,9 +39,8 @@ function addMinutes(time, minutesToAdd) {
 }
 
 // Fonction pour formater les signaux avec le template et le lien hypertexte
-function formatSignal(time, entry, direction) {
+function formatSignal(time, entry, direction, pair) {
   const emoji = direction === 'BUY' ? '🟩' : '🟥';
-  const pair = pairs[morningSession ? 'morning' : (afternoonSession ? 'afternoon' : (eveningSession ? 'evening' : 'night'))][Math.floor(Math.random() * 10)];
   return `
 ${pair}
 🕘 Expiration 5M
@@ -96,8 +52,8 @@ ${emoji} ${direction}
 2️⃣ level at ${addMinutes(entry, 10)}  
 3️⃣ level at ${addMinutes(entry, 15)}
 
-💥 <a href="https://www.brof.jej">GET THIS SIGNAL HERE!</a>
-💰 HOW TO START?
+💥 <a href="https://bit.ly/4cAu9yg">GET THIS SIGNAL HERE!</a>
+💰 < href="https://telegra.ph/INSTRUCTIONS-08-25">HOW TO START?</a>
   `;
 }
 
@@ -105,7 +61,8 @@ ${emoji} ${direction}
 function sendSignal(session, index) {
   const time = schedule[session][index];
   const direction = Math.random() > 0.5 ? 'BUY' : 'SELL'; // Direction aléatoire
-  const signalMessage = formatSignal(time, time, direction);
+  const pair = pairs[Math.floor(Math.random() * pairs.length)]; // Choisir une paire aléatoire
+  const signalMessage = formatSignal(time, time, direction, pair);
 
   // Envoi du message avec le mode HTML
   bot.sendMessage(channelId, signalMessage, { parse_mode: 'HTML' });
@@ -138,11 +95,12 @@ bot.onText(/\/send/, (msg) => {
 
   // Signal aléatoire pour une session donnée
   const randomSession = ['morning', 'afternoon', 'evening', 'night'][Math.floor(Math.random() * 4)];
-  const randomIndex = Math.floor(Math.random() * 10);
+  const randomIndex = Math.floor(Math.random() * schedule[randomSession].length);
 
   const time = schedule[randomSession][randomIndex];
   const direction = Math.random() > 0.5 ? 'BUY' : 'SELL'; // Direction aléatoire
-  const manualSignal = formatSignal(time, time, direction);
+  const pair = pairs[Math.floor(Math.random() * pairs.length)]; // Choisir une paire aléatoire
+  const manualSignal = formatSignal(time, time, direction, pair);
 
   bot.sendMessage(channelId, manualSignal, { parse_mode: 'HTML' });  // Envoi au canal avec le lien
   bot.sendMessage(chatId, 'Signal manuel envoyé !');  // Confirmation pour l'utilisateur
@@ -178,10 +136,7 @@ bot.onText(/\/announce_afternoon/, () => announceSession('afternoon', '☀️'))
 bot.onText(/\/announce_evening/, () => announceSession('evening', '🌙'));
 bot.onText(/\/announce_night/, () => announceSession('night', '🌑'));
 
-
-
-
-console.log('Bot demarrer');
+console.log('Bot demarer');
 // Code keep_alive pour Ã©viter que le bot ne s'endorme
 http.createServer(function (req, res) {
     res.write("I'm alive");
